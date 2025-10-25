@@ -35,7 +35,7 @@ const ClassCard: React.FC<{ yogaClass: YogaClass }> = ({ yogaClass }) => {
     const handleCancel = () => {
         setClasses(prev => prev.map(c => {
             if (c.id === yogaClass.id) {
-                // If user is cancelling, check waitlist
+                // Si el usuario cancela, revisa la lista de espera
                 const newAttendees = c.attendees.filter(id => id !== currentUser.id);
                 let newWaitlist = [...c.waitlist];
 
@@ -62,15 +62,15 @@ const ClassCard: React.FC<{ yogaClass: YogaClass }> = ({ yogaClass }) => {
 
     const renderActionButtons = () => {
         if (isBooked) {
-            return <button onClick={handleCancel} className="w-full px-4 py-2 bg-red-100 text-red-700 font-semibold rounded-lg hover:bg-red-200 transition-colors">Cancel Booking</button>;
+            return <button onClick={handleCancel} className="w-full px-4 py-2 bg-red-100 text-red-700 font-semibold rounded-lg hover:bg-red-200 transition-colors">Cancelar Reserva</button>;
         }
         if (isWaitlisted) {
-            return <button onClick={handleCancelWaitlist} className="w-full px-4 py-2 bg-orange-100 text-orange-700 font-semibold rounded-lg hover:bg-orange-200 transition-colors">Leave Waitlist</button>;
+            return <button onClick={handleCancelWaitlist} className="w-full px-4 py-2 bg-orange-100 text-orange-700 font-semibold rounded-lg hover:bg-orange-200 transition-colors">Salir de Lista de Espera</button>;
         }
         if (isFull) {
-            return <button onClick={handleJoinWaitlist} className="w-full px-4 py-2 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 transition-colors">Join Waitlist</button>;
+            return <button onClick={handleJoinWaitlist} className="w-full px-4 py-2 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 transition-colors">Unirse a Lista de Espera</button>;
         }
-        return <button onClick={handleBook} className="w-full px-4 py-2 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700 transition-colors">Book Now</button>;
+        return <button onClick={handleBook} className="w-full px-4 py-2 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700 transition-colors">Reservar Ahora</button>;
     };
 
     return (
@@ -78,7 +78,7 @@ const ClassCard: React.FC<{ yogaClass: YogaClass }> = ({ yogaClass }) => {
             <div className="p-6 flex-grow">
                 <div className="flex justify-between items-start">
                     <div>
-                        <p className="text-sm font-semibold text-teal-600">{yogaClass.startTime.toLocaleDateString(undefined, { weekday: 'long' })}</p>
+                        <p className="text-sm font-semibold text-teal-600">{yogaClass.startTime.toLocaleDateString('es-MX', { weekday: 'long' })}</p>
                         <h3 className="text-xl font-bold text-stone-800 mt-1">{yogaClass.name}</h3>
                     </div>
                     <div className="text-right">
@@ -93,14 +93,14 @@ const ClassCard: React.FC<{ yogaClass: YogaClass }> = ({ yogaClass }) => {
                     <img src={teacher?.avatarUrl} alt={teacher?.name} className="w-10 h-10 rounded-full mr-3"/>
                     <div>
                         <p className="font-semibold text-stone-700">{teacher?.name}</p>
-                        <p className="text-xs text-stone-500">Instructor</p>
+                        <p className="text-xs text-stone-500">Instructor(a)</p>
                     </div>
                 </div>
             </div>
             <div className="bg-stone-50 p-4">
                 <div className="flex justify-between items-center text-sm mb-3">
                     <span className="font-semibold text-stone-600">
-                        Spots Left: {Math.max(0, yogaClass.capacity - yogaClass.attendees.length)}
+                        Lugares: {Math.max(0, yogaClass.capacity - yogaClass.attendees.length)}
                     </span>
                     <span className="font-bold text-xl text-emerald-600">${yogaClass.price}</span>
                 </div>
@@ -119,8 +119,8 @@ const ScheduleView: React.FC = () => {
     return (
         <div className="space-y-6">
              <div>
-                <h1 className="text-3xl font-bold text-stone-800">Class Schedule</h1>
-                <p className="text-stone-500 mt-1">Find your next class and book your spot.</p>
+                <h1 className="text-3xl font-bold text-stone-800">Horario de Clases</h1>
+                <p className="text-stone-500 mt-1">Encuentra tu próxima clase y reserva tu lugar.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

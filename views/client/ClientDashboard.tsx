@@ -3,13 +3,15 @@ import React, { useState } from 'react';
 import Layout from '../../components/Layout';
 import { Home, Calendar, Video, Tag, User, Info } from 'lucide-react';
 import ScheduleView from './ScheduleView';
+import BookingsView from './BookingsView';
+import OnDemandView from './OnDemandView';
+import ProfileView from './ProfileView';
 
 const clientNavItems = [
-    { name: 'Home', icon: Home, viewId: 'home' },
-    { name: 'Schedule', icon: Calendar, viewId: 'schedule' },
-    { name: 'My Bookings', icon: Calendar, viewId: 'bookings' },
-    { name: 'On-Demand', icon: Video, viewId: 'ondemand' },
-    { name: 'Profile', icon: User, viewId: 'profile' },
+    { name: 'Horario', icon: Calendar, viewId: 'schedule' },
+    { name: 'Mis Reservas', icon: Calendar, viewId: 'bookings' },
+    { name: 'Videos', icon: Video, viewId: 'ondemand' },
+    { name: 'Perfil', icon: User, viewId: 'profile' },
 ];
 
 const ClientDashboard: React.FC = () => {
@@ -19,14 +21,12 @@ const ClientDashboard: React.FC = () => {
         switch (activeView) {
             case 'schedule':
                 return <ScheduleView />;
-            case 'home':
-                return <div className="text-2xl font-bold">Client Home Coming Soon</div>;
             case 'bookings':
-                return <div className="text-2xl font-bold">My Bookings Coming Soon</div>;
+                return <BookingsView />;
             case 'ondemand':
-                return <div className="text-2xl font-bold">On-Demand Content Coming Soon</div>;
+                return <OnDemandView />;
             case 'profile':
-                return <div className="text-2xl font-bold">User Profile Coming Soon</div>;
+                return <ProfileView />;
             default:
                 return <ScheduleView />;
         }

@@ -2,17 +2,9 @@
 import { GoogleGenAI } from "@google/genai";
 
 export const generateClassDescription = async (className: string, keywords: string): Promise<string> => {
-    const API_KEY = process.env.API_KEY;
-
-    if (!API_KEY) {
-        const message = "Gemini API key not configured. Please add it to your environment variables.";
-        console.warn(message);
-        return message;
-    }
-
     try {
-        const ai = new GoogleGenAI({ apiKey: API_KEY });
-        const prompt = `Generate a compelling, one-sentence yoga class description for a class named "${className}". Incorporate these keywords: ${keywords}. Make it sound inviting and suitable for a modern yoga studio.`;
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        const prompt = `Genera una descripción atractiva de una sola oración para una clase de yoga llamada "${className}". Incorpora estas palabras clave: ${keywords}. Haz que suene acogedora y adecuada para un estudio de yoga moderno.`;
 
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
@@ -21,7 +13,12 @@ export const generateClassDescription = async (className: string, keywords: stri
 
         return response.text.trim();
     } catch (error) {
-        console.error("Error generating class description:", error);
-        return "Failed to generate description. Please try again.";
+        console.error("Error al generar la descripción de la clase:", error);
+        
+        if (error instanceof Error && error.message.includes("API Key")) {
+             return "La clave de API de Gemini no está configurada. No se pudo generar la descripción.";
+        }
+
+        return "No se pudo generar la descripción. Por favor, inténtalo de nuevo.";
     }
 };

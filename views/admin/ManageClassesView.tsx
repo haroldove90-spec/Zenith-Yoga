@@ -47,16 +47,16 @@ const ClassForm: React.FC<ClassFormProps> = ({ onSave, onCancel, classData }) =>
     const [time, setTime] = useState(classData ? classData.startTime.toTimeString().substring(0, 5) : '');
     const [duration, setDuration] = useState(classData?.duration || 60);
     const [capacity, setCapacity] = useState(classData?.capacity || 15);
-    const [price, setPrice] = useState(classData?.price || 25);
+    const [price, setPrice] = useState(classData?.price || 350);
     const [isGenerating, setIsGenerating] = useState(false);
 
     const handleGenerateDescription = async () => {
         if (!name) {
-            alert("Please enter a class name first.");
+            alert("Por favor, ingresa un nombre para la clase primero.");
             return;
         }
         setIsGenerating(true);
-        const keywords = teachers.find(t => t.id === teacherId)?.bio.split(' ').slice(0, 5).join(', ') || "yoga, flow, strength";
+        const keywords = teachers.find(t => t.id === teacherId)?.bio.split(' ').slice(0, 5).join(', ') || "yoga, flow, fuerza";
         const newDescription = await generateClassDescription(name, keywords);
         setDescription(newDescription);
         setIsGenerating(false);
@@ -80,50 +80,50 @@ const ClassForm: React.FC<ClassFormProps> = ({ onSave, onCancel, classData }) =>
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-                <label className="block text-sm font-medium text-stone-600">Class Name</label>
+                <label className="block text-sm font-medium text-stone-600">Nombre de la Clase</label>
                 <input type="text" value={name} onChange={e => setName(e.target.value)} className="mt-1 block w-full border-stone-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500" required />
             </div>
             <div>
-                <label className="block text-sm font-medium text-stone-600">Description</label>
+                <label className="block text-sm font-medium text-stone-600">Descripción</label>
                 <textarea value={description} onChange={e => setDescription(e.target.value)} rows={3} className="mt-1 block w-full border-stone-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500"></textarea>
                 <button type="button" onClick={handleGenerateDescription} disabled={isGenerating} className="mt-2 inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:bg-stone-400">
                     <Sparkles className={`w-4 h-4 mr-2 ${isGenerating ? 'animate-spin' : ''}`} />
-                    {isGenerating ? 'Generating...' : 'Generate with AI'}
+                    {isGenerating ? 'Generando...' : 'Generar con IA'}
                 </button>
             </div>
             <div>
-                <label className="block text-sm font-medium text-stone-600">Teacher</label>
+                <label className="block text-sm font-medium text-stone-600">Instructor(a)</label>
                 <select value={teacherId} onChange={e => setTeacherId(e.target.value)} className="mt-1 block w-full border-stone-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500">
                     {teachers.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                 </select>
             </div>
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <label className="block text-sm font-medium text-stone-600">Date</label>
+                    <label className="block text-sm font-medium text-stone-600">Fecha</label>
                     <input type="date" value={date} onChange={e => setDate(e.target.value)} className="mt-1 block w-full border-stone-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500" required />
                 </div>
                  <div>
-                    <label className="block text-sm font-medium text-stone-600">Time</label>
+                    <label className="block text-sm font-medium text-stone-600">Hora</label>
                     <input type="time" value={time} onChange={e => setTime(e.target.value)} className="mt-1 block w-full border-stone-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500" required />
                 </div>
             </div>
              <div className="grid grid-cols-3 gap-4">
                  <div>
-                    <label className="block text-sm font-medium text-stone-600">Duration (min)</label>
+                    <label className="block text-sm font-medium text-stone-600">Duración (min)</label>
                     <input type="number" value={duration} onChange={e => setDuration(Number(e.target.value))} className="mt-1 block w-full border-stone-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500" required />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-stone-600">Capacity</label>
+                    <label className="block text-sm font-medium text-stone-600">Capacidad</label>
                     <input type="number" value={capacity} onChange={e => setCapacity(Number(e.target.value))} className="mt-1 block w-full border-stone-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500" required />
                 </div>
                  <div>
-                    <label className="block text-sm font-medium text-stone-600">Price ($)</label>
+                    <label className="block text-sm font-medium text-stone-600">Precio (MXN)</label>
                     <input type="number" value={price} onChange={e => setPrice(Number(e.target.value))} className="mt-1 block w-full border-stone-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500" required />
                 </div>
             </div>
             <div className="flex justify-end space-x-3 pt-4">
-                <button type="button" onClick={onCancel} className="px-4 py-2 bg-stone-200 text-stone-700 rounded-md hover:bg-stone-300">Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700">Save Class</button>
+                <button type="button" onClick={onCancel} className="px-4 py-2 bg-stone-200 text-stone-700 rounded-md hover:bg-stone-300">Cancelar</button>
+                <button type="submit" className="px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700">Guardar Clase</button>
             </div>
         </form>
     );
@@ -146,7 +146,7 @@ const ManageClassesView: React.FC = () => {
     };
 
     const handleDelete = (classId: string) => {
-        if (window.confirm("Are you sure you want to delete this class?")) {
+        if (window.confirm("¿Estás seguro de que quieres eliminar esta clase?")) {
             setClasses(prev => prev.filter(c => c.id !== classId));
         }
     };
@@ -167,18 +167,27 @@ const ManageClassesView: React.FC = () => {
         setIsModalOpen(false);
     };
 
-    const getTeacherName = (teacherId: string) => teachers.find(t => t.id === teacherId)?.name || 'Unknown';
+    const getTeacherName = (teacherId: string) => teachers.find(t => t.id === teacherId)?.name || 'Desconocido';
+
+    const translateStatus = (status: ClassStatus) => {
+        switch (status) {
+            case ClassStatus.UPCOMING: return 'PRÓXIMA';
+            case ClassStatus.COMPLETED: return 'COMPLETADA';
+            case ClassStatus.CANCELLED: return 'CANCELADA';
+            default: return status;
+        }
+    }
 
     return (
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
                 <div>
-                    <h1 className="text-3xl font-bold text-stone-800">Manage Classes</h1>
-                    <p className="text-stone-500 mt-1">Add, edit, or remove yoga classes from the schedule.</p>
+                    <h1 className="text-3xl font-bold text-stone-800">Gestionar Clases</h1>
+                    <p className="text-stone-500 mt-1">Añade, edita o elimina clases de yoga del horario.</p>
                 </div>
                 <button onClick={handleAddNew} className="mt-4 md:mt-0 flex items-center px-4 py-2 bg-teal-600 text-white rounded-lg shadow-md hover:bg-teal-700 transition-colors">
                     <PlusCircle className="w-5 h-5 mr-2" />
-                    Add New Class
+                    Añadir Nueva Clase
                 </button>
             </div>
 
@@ -187,12 +196,12 @@ const ManageClassesView: React.FC = () => {
                     <table className="w-full text-sm text-left text-stone-600">
                         <thead className="text-xs text-stone-700 uppercase bg-stone-100">
                             <tr>
-                                <th scope="col" className="px-6 py-3">Class</th>
-                                <th scope="col" className="px-6 py-3">Time & Date</th>
-                                <th scope="col" className="px-6 py-3">Teacher</th>
-                                <th scope="col" className="px-6 py-3 text-center">Bookings</th>
-                                <th scope="col" className="px-6 py-3 text-center">Status</th>
-                                <th scope="col" className="px-6 py-3 text-right">Actions</th>
+                                <th scope="col" className="px-6 py-3">Clase</th>
+                                <th scope="col" className="px-6 py-3">Fecha y Hora</th>
+                                <th scope="col" className="px-6 py-3">Instructor(a)</th>
+                                <th scope="col" className="px-6 py-3 text-center">Reservas</th>
+                                <th scope="col" className="px-6 py-3 text-center">Estado</th>
+                                <th scope="col" className="px-6 py-3 text-right">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -200,8 +209,8 @@ const ManageClassesView: React.FC = () => {
                                 <tr key={cls.id} className="bg-white border-b hover:bg-stone-50">
                                     <td className="px-6 py-4 font-medium text-stone-900">{cls.name}</td>
                                     <td className="px-6 py-4">
-                                        <div>{cls.startTime.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}</div>
-                                        <div className="text-xs text-stone-500">{cls.startTime.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })} ({cls.duration} min)</div>
+                                        <div>{cls.startTime.toLocaleDateString('es-MX', { weekday: 'short', month: 'short', day: 'numeric' })}</div>
+                                        <div className="text-xs text-stone-500">{cls.startTime.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })} ({cls.duration} min)</div>
                                     </td>
                                     <td className="px-6 py-4">{getTeacherName(cls.teacherId)}</td>
                                     <td className="px-6 py-4 text-center">
@@ -209,7 +218,7 @@ const ManageClassesView: React.FC = () => {
                                             <Users className="w-4 h-4 text-blue-500" />
                                             <span>{cls.attendees.length} / {cls.capacity}</span>
                                             {cls.waitlist.length > 0 && (
-                                                <div className="flex items-center" title={`${cls.waitlist.length} on waitlist`}>
+                                                <div className="flex items-center" title={`${cls.waitlist.length} en lista de espera`}>
                                                    <List className="w-4 h-4 text-orange-500 ml-1" />
                                                    <span>{cls.waitlist.length}</span>
                                                 </div>
@@ -222,7 +231,7 @@ const ManageClassesView: React.FC = () => {
                                             cls.status === ClassStatus.COMPLETED ? 'bg-blue-100 text-blue-800' :
                                             'bg-red-100 text-red-800'
                                         }`}>
-                                            {cls.status}
+                                            {translateStatus(cls.status)}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 text-right">
@@ -238,7 +247,7 @@ const ManageClassesView: React.FC = () => {
                 </div>
             </div>
 
-            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingClass ? 'Edit Class' : 'Add New Class'}>
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingClass ? 'Editar Clase' : 'Añadir Nueva Clase'}>
                 <ClassForm 
                     onSave={handleSaveClass} 
                     onCancel={() => setIsModalOpen(false)} 

@@ -1,5 +1,5 @@
 {
-  "name": "Zenith Yoga Studio",
-  "description": "A comprehensive management application for a yoga studio, featuring role-based access for admins and clients. It includes class scheduling, booking, waitlists, payment tracking, on-demand content, and direct communication features.",
+  "name": "Estudio de Yoga Zenith",
+  "description": "Una aplicación integral de gestión para un estudio de yoga, con acceso basado en roles para administradores y clientes. Incluye programación de clases, reservas, listas de espera, seguimiento de pagos, contenido bajo demanda y funciones de comunicación directa.",
   "requestFramePermissions": []
 }

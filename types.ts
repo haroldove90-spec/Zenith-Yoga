@@ -41,7 +41,7 @@ export interface YogaClass {
 }
 
 export interface Booking {
-  id: string;
+  id:string;
   classId: string;
   userId: string;
   bookingTime: Date;
@@ -55,6 +55,7 @@ export interface OnDemandVideo {
     thumbnailUrl: string;
     duration: number; // in minutes
     teacherId: string;
+    youtubeId: string;
 }
 
 export interface Promotion {
@@ -71,4 +72,13 @@ export interface FinancialRecord {
     type: 'income' | 'expense';
     description: string;
     amount: number;
+}
+
+export interface ChatMessage {
+    id: string;
+    senderId: string;
+    receiverId: string;
+    text: string;
+    timestamp: Date;
+    read: boolean;
 }

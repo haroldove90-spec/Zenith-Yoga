@@ -1,7 +1,7 @@
 
 import React, { useState, createContext, useContext, useMemo } from 'react';
-import { User, Role, YogaClass, Booking, OnDemandVideo, Promotion, Teacher } from './types';
-import { mockUsers, mockClasses, mockBookings, mockOnDemandVideos, mockPromotions, mockTeachers } from './data/mockData';
+import { User, Role, YogaClass, Booking, OnDemandVideo, Promotion, Teacher, FinancialRecord } from './types';
+import { mockUsers, mockClasses, mockBookings, mockOnDemandVideos, mockPromotions, mockTeachers, mockFinancialRecords } from './data/mockData';
 import AdminDashboard from './views/admin/AdminDashboard';
 import ClientDashboard from './views/client/ClientDashboard';
 import { Hash, Users, Calendar, Video, Tag, UserCircle, LogIn, Sun, Moon } from 'lucide-react';
@@ -18,12 +18,14 @@ type AppDataContextType = {
   promotions: Promotion[];
   setPromotions: React.Dispatch<React.SetStateAction<Promotion[]>>;
   teachers: Teacher[];
+  financialRecords: FinancialRecord[];
+  setFinancialRecords: React.Dispatch<React.SetStateAction<FinancialRecord[]>>;
 };
 
 const AppDataContext = createContext<AppDataContextType | null>(null);
 export const useAppData = () => {
     const context = useContext(AppDataContext);
-    if (!context) throw new Error("useAppData must be used within an AppDataProvider");
+    if (!context) throw new Error("useAppData debe usarse dentro de un AppDataProvider");
     return context;
 };
 
@@ -36,7 +38,7 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | null>(null);
 export const useAuth = () => {
     const context = useContext(AuthContext);
-    if (!context) throw new Error("useAuth must be used within an AuthProvider");
+    if (!context) throw new Error("useAuth debe usarse dentro de un AuthProvider");
     return context;
 };
 
@@ -51,7 +53,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         if (user) {
             setCurrentUser(user);
         } else {
-            console.error("User not found");
+            console.error("Usuario no encontrado");
         }
     };
 
@@ -76,10 +78,11 @@ const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
     const [videos, setVideos] = useState<OnDemandVideo[]>(mockOnDemandVideos);
     const [promotions, setPromotions] = useState<Promotion[]>(mockPromotions);
     const [teachers, setTeachers] = useState<Teacher[]>(mockTeachers);
+    const [financialRecords, setFinancialRecords] = useState<FinancialRecord[]>(mockFinancialRecords);
 
     const contextValue = useMemo(() => ({
-        users, setUsers, classes, setClasses, bookings, setBookings, videos, promotions, setPromotions, teachers
-    }), [users, classes, bookings, videos, promotions, teachers]);
+        users, setUsers, classes, setClasses, bookings, setBookings, videos, promotions, setPromotions, teachers, financialRecords, setFinancialRecords
+    }), [users, classes, bookings, videos, promotions, teachers, financialRecords]);
 
     return (
         <AppDataContext.Provider value={contextValue}>
@@ -98,24 +101,24 @@ const LoginScreen = () => {
             <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8 space-y-8">
                 <div className="text-center">
                     <h1 className="text-4xl font-bold text-teal-700 tracking-tight">Zenith Yoga</h1>
-                    <p className="text-stone-500 mt-2">Welcome back to your sanctuary.</p>
+                    <p className="text-stone-500 mt-2">Bienvenido de nuevo a tu santuario.</p>
                 </div>
                 
                 <div className="space-y-4">
-                    <h2 className="text-lg font-semibold text-stone-600 text-center">Select your role to continue</h2>
+                    <h2 className="text-lg font-semibold text-stone-600 text-center">Selecciona tu rol para continuar</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <button onClick={() => login('user-admin-1')} className="flex flex-col items-center justify-center p-6 bg-teal-50 hover:bg-teal-100 rounded-lg border-2 border-teal-200 hover:border-teal-400 transition-all duration-300 transform hover:scale-105">
                             <Users className="w-10 h-10 text-teal-600 mb-2"/>
-                            <span className="font-bold text-teal-800">Admin</span>
+                            <span className="font-bold text-teal-800">Administrador</span>
                         </button>
                         <button onClick={() => login('user-client-1')} className="flex flex-col items-center justify-center p-6 bg-emerald-50 hover:bg-emerald-100 rounded-lg border-2 border-emerald-200 hover:border-emerald-400 transition-all duration-300 transform hover:scale-105">
                             <UserCircle className="w-10 h-10 text-emerald-600 mb-2"/>
-                            <span className="font-bold text-emerald-800">Client</span>
+                            <span className="font-bold text-emerald-800">Cliente</span>
                         </button>
                     </div>
                 </div>
 
-                 <p className="text-xs text-stone-400 text-center pt-4">This is a demo. Select a role to log in as a pre-configured user.</p>
+                 <p className="text-xs text-stone-400 text-center pt-4">Esto es una demostración. Selecciona un rol para iniciar sesión como un usuario preconfigurado.</p>
             </div>
         </div>
     );

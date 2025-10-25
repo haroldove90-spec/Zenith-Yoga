@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '../App';
 import { User, LogOut, ChevronDown, ChevronUp, Menu, X } from 'lucide-react';
@@ -13,7 +14,6 @@ const Layout: React.FC<LayoutProps> = ({ children, navItems, activeView, setActi
     const { currentUser, logout } = useAuth();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     
-    // FIX: Define props interface for NavLink and type it as a React.FC to resolve TypeScript errors with the 'key' prop.
     interface NavLinkProps {
         item: { name: string; icon: React.ElementType; viewId: string };
     }
@@ -61,7 +61,7 @@ const Layout: React.FC<LayoutProps> = ({ children, navItems, activeView, setActi
                         className="flex items-center w-full px-4 py-3 text-sm font-medium rounded-lg bg-teal-800 hover:bg-red-600 transition-colors duration-200"
                     >
                         <LogOut className="w-5 h-5 mr-3" />
-                        <span>Logout</span>
+                        <span>Cerrar Sesión</span>
                     </button>
                 </div>
             </aside>
@@ -89,14 +89,25 @@ const Layout: React.FC<LayoutProps> = ({ children, navItems, activeView, setActi
                             </div>
                         </div>
                         <button onClick={logout} className="flex items-center w-full px-4 py-3 text-sm font-medium rounded-lg bg-teal-800 hover:bg-red-600">
-                            <LogOut className="w-5 h-5 mr-3" /> Logout
+                            <LogOut className="w-5 h-5 mr-3" /> Cerrar Sesión
                         </button>
                     </div>
                 )}
                 
                 {/* Main Content */}
-                <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
-                    {children}
+                <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto flex flex-col">
+                    <div className="flex-grow">
+                        {children}
+                    </div>
+                    <footer className="pt-8 pb-4 text-center">
+                        <a href="https://www.yogaalliance.org/" target="_blank" rel="noopener noreferrer" className="inline-block" title="Registered Yoga School with Yoga Alliance">
+                            <img 
+                                src="https://appdesignmex.com/yogaalliance.png" 
+                                alt="Yoga Alliance Registered Yoga School" 
+                                className="h-20 md:h-24 mx-auto"
+                            />
+                        </a>
+                    </footer>
                 </main>
 
                  {/* Mobile Bottom Bar */}
