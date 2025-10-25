@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useAuth } from '../App';
-import { User, LogOut, ChevronDown, ChevronUp, Menu, X } from 'lucide-react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { useAuth, useAppData } from '../App';
+import { User, LogOut, ChevronDown, ChevronUp, Menu, X, MessageSquare } from 'lucide-react';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -11,7 +11,48 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children, navItems, activeView, setActiveView }) => {
     const { currentUser, logout } = useAuth();
+    const { messages } = useAppData();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const prevMessagesCount = useRef(messages.length);
+
+    // --- NOTIFICATION LOGIC ---
+    const hasUnreadMessages = useMemo(() => {
+        if (!currentUser) return false;
+        return messages.some(m => m.receiverId === currentUser.id && !m.read);
+    }, [messages, currentUser]);
+
+    const playNotificationSound = () => {
+        // Function to play a sound without needing an audio file
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        if (!audioContext) return; // AudioContext not supported
+        
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(880, audioContext.currentTime); // A5 note
+        gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+
+        // Fade out
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.5);
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+    };
+
+     useEffect(() => {
+        if (messages.length > prevMessagesCount.current) {
+            const latestMessage = messages[messages.length - 1];
+            if (latestMessage.receiverId === currentUser?.id) {
+                // It's a new incoming message
+                playNotificationSound();
+            }
+        }
+        // Update the count for the next check
+        prevMessagesCount.current = messages.length;
+    }, [messages, currentUser?.id]);
     
     interface NavLinkProps {
         item: { name: string; icon: React.ElementType; viewId: string };
@@ -127,6 +168,18 @@ const Layout: React.FC<LayoutProps> = ({ children, navItems, activeView, setActi
                     })}
                 </nav>
             </div>
+
+            {/* --- FLOATING CHAT BUTTON --- */}
+            <button
+                onClick={() => setActiveView('chat')}
+                className="fixed bottom-20 right-5 md:bottom-8 md:right-8 z-30 bg-teal-600 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center hover:bg-teal-700 transition-transform transform hover:scale-110"
+                aria-label="Abrir chat"
+            >
+                <MessageSquare className="w-8 h-8" />
+                {hasUnreadMessages && (
+                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white"></span>
+                )}
+            </button>
         </div>
     );
 };

@@ -10,6 +10,19 @@ const ChatView: React.FC = () => {
     const [newMessage, setNewMessage] = useState('');
     const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
+    useEffect(() => {
+        if (selectedUserId && currentUser) {
+            // Mark messages in the current conversation as read
+            setMessages(prev => 
+                prev.map(m => 
+                    (m.receiverId === currentUser.id && m.senderId === selectedUserId && !m.read) 
+                        ? { ...m, read: true } 
+                        : m
+                )
+            );
+        }
+    }, [selectedUserId, currentUser, setMessages]);
+
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
@@ -113,7 +126,7 @@ const ChatView: React.FC = () => {
                                         value={newMessage}
                                         onChange={(e) => setNewMessage(e.target.value)}
                                         placeholder="Escribe un mensaje..."
-                                        className="flex-grow border-stone-300 rounded-full shadow-sm focus:ring-teal-500 focus:border-teal-500 pl-4 pr-12 py-2"
+                                        className="flex-grow min-w-0 bg-stone-100 border-stone-300 text-stone-900 placeholder-stone-500 rounded-full shadow-sm focus:ring-teal-500 focus:border-teal-500 pl-4 pr-12 py-2"
                                     />
                                     <button type="submit" className="ml-3 p-3 bg-teal-600 text-white rounded-full hover:bg-teal-700 disabled:bg-stone-300" disabled={!newMessage.trim()}>
                                         <Send className="w-5 h-5" />
