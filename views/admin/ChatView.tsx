@@ -1,15 +1,14 @@
-
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useAppData, useAuth } from '../../App';
 import { ChatMessage, User } from '../../types';
 import { mockMessages } from '../../data/mockData';
-import { Send } from 'lucide-react';
+import { Send, ArrowLeft } from 'lucide-react';
 
 const ChatView: React.FC = () => {
     const { users } = useAppData();
     const { currentUser } = useAuth();
     const [messages, setMessages] = useState<ChatMessage[]>(mockMessages);
-    const [selectedUserId, setSelectedUserId] = useState<string>('user-client-2');
+    const [selectedUserId, setSelectedUserId] = useState<string>('');
     const [newMessage, setNewMessage] = useState('');
     const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
@@ -55,15 +54,17 @@ const ChatView: React.FC = () => {
     if(!currentUser) return null;
 
     return (
-        <div className="h-[calc(100vh-4rem)] flex flex-col">
-            <h1 className="text-3xl font-bold text-stone-800 mb-4 px-0">Chat</h1>
+        <div className="h-full flex flex-col">
+            <h1 className="text-3xl font-bold text-stone-800 mb-4 shrink-0">Chat</h1>
             <div className="bg-white rounded-lg shadow-sm flex-grow flex overflow-hidden">
                 {/* Contacts List */}
-                <div className="w-1/3 border-r border-stone-200 overflow-y-auto">
+                <div className={`
+                    ${selectedUserId ? 'hidden' : 'flex'} md:flex flex-col w-full md:w-1/3 border-r border-stone-200
+                `}>
                     <div className="p-4 border-b">
                         <h2 className="text-lg font-bold">Conversaciones</h2>
                     </div>
-                    <ul>
+                    <ul className="overflow-y-auto">
                         {contacts.map(contact => {
                             const lastMessage = messages
                                 .filter(m => m.senderId === contact.id || m.receiverId === contact.id)
@@ -83,10 +84,15 @@ const ChatView: React.FC = () => {
                     </ul>
                 </div>
                 {/* Chat Window */}
-                <div className="w-2/3 flex flex-col">
+                <div className={`
+                    ${!selectedUserId ? 'hidden' : 'flex'} md:flex flex-col w-full md:w-2/3
+                `}>
                     {selectedContact ? (
                         <>
-                            <div className="p-4 border-b flex items-center">
+                            <div className="p-4 border-b flex items-center shrink-0">
+                                <button onClick={() => setSelectedUserId('')} className="md:hidden mr-3 p-1 rounded-full hover:bg-stone-100">
+                                    <ArrowLeft className="w-5 h-5 text-stone-600" />
+                                </button>
                                 <img src={selectedContact.avatarUrl} alt={selectedContact.name} className="w-10 h-10 rounded-full mr-3" />
                                 <h2 className="text-lg font-bold text-stone-800">{selectedContact.name}</h2>
                             </div>
@@ -94,14 +100,14 @@ const ChatView: React.FC = () => {
                                 {selectedConversation.map(msg => (
                                     <div key={msg.id} className={`flex mb-4 ${msg.senderId === currentUser.id ? 'justify-end' : 'justify-start'}`}>
                                         <div className={`rounded-lg px-4 py-2 max-w-sm ${msg.senderId === currentUser.id ? 'bg-teal-600 text-white' : 'bg-stone-200 text-stone-800'}`}>
-                                            <p>{msg.text}</p>
+                                            <p className="break-words">{msg.text}</p>
                                             <p className="text-xs opacity-75 mt-1 text-right">{msg.timestamp.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit'})}</p>
                                         </div>
                                     </div>
                                 ))}
                                 <div ref={messagesEndRef} />
                             </div>
-                            <div className="p-4 bg-white border-t">
+                            <div className="p-4 bg-white border-t mt-auto shrink-0">
                                 <form onSubmit={handleSendMessage} className="flex items-center">
                                     <input 
                                         type="text"
@@ -117,7 +123,7 @@ const ChatView: React.FC = () => {
                             </div>
                         </>
                     ) : (
-                        <div className="flex-grow flex items-center justify-center text-stone-500">
+                        <div className="hidden md:flex flex-grow items-center justify-center text-stone-500">
                             <p>Selecciona una conversación para empezar a chatear.</p>
                         </div>
                     )}

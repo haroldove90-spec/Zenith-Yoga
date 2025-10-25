@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../App';
 import { User, LogOut, ChevronDown, ChevronUp, Menu, X } from 'lucide-react';
@@ -39,7 +38,7 @@ const Layout: React.FC<LayoutProps> = ({ children, navItems, activeView, setActi
     };
 
     return (
-        <div className="flex h-screen bg-stone-100">
+        <div className="flex h-screen bg-stone-100 overflow-hidden">
             {/* Desktop Sidebar */}
             <aside className="hidden md:flex flex-col w-64 bg-teal-900 text-white">
                 <div className="flex items-center justify-center h-20 border-b border-teal-800">
