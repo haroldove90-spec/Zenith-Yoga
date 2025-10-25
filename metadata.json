@@ -1,0 +1,5 @@
+{
+  "name": "Zenith Yoga Studio",
+  "description": "A comprehensive management application for a yoga studio, featuring role-based access for admins and clients. It includes class scheduling, booking, waitlists, payment tracking, on-demand content, and direct communication features.",
+  "requestFramePermissions": []
+}
