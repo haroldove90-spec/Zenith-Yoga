@@ -1,4 +1,3 @@
-
 import React, { useMemo } from 'react';
 import { useAuth, useAppData } from '../../App';
 import { User, Booking, ClassStatus } from '../../types';
@@ -64,7 +63,7 @@ const ProfileView: React.FC = () => {
             {/* Stats */}
             <div>
                  <h2 className="text-2xl font-semibold text-stone-700 mb-4">Mis Estadísticas</h2>
-                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div className="bg-white p-6 rounded-lg shadow-sm flex items-center">
                         <div className="p-3 rounded-full bg-teal-100 mr-4">
                             <CalendarCheck className="w-6 h-6 text-teal-600" />

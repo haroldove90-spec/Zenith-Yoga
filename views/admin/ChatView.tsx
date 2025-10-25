@@ -1,13 +1,11 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useAppData, useAuth } from '../../App';
 import { ChatMessage, User } from '../../types';
-import { mockMessages } from '../../data/mockData';
 import { Send, ArrowLeft } from 'lucide-react';
 
 const ChatView: React.FC = () => {
-    const { users } = useAppData();
+    const { users, messages, setMessages } = useAppData();
     const { currentUser } = useAuth();
-    const [messages, setMessages] = useState<ChatMessage[]>(mockMessages);
     const [selectedUserId, setSelectedUserId] = useState<string>('');
     const [newMessage, setNewMessage] = useState('');
     const messagesEndRef = useRef<null | HTMLDivElement>(null);
@@ -44,8 +42,9 @@ const ChatView: React.FC = () => {
     }, [messages, users, currentUser]);
 
     const selectedConversation = useMemo(() => {
+        if(!currentUser) return [];
         return messages.filter(
-            msg => (msg.senderId === selectedUserId && msg.receiverId === currentUser?.id) || (msg.senderId === currentUser?.id && msg.receiverId === selectedUserId)
+            msg => (msg.senderId === selectedUserId && msg.receiverId === currentUser.id) || (msg.senderId === currentUser.id && msg.receiverId === selectedUserId)
         ).sort((a,b) => a.timestamp.getTime() - b.timestamp.getTime());
     }, [messages, selectedUserId, currentUser]);
     
@@ -54,17 +53,17 @@ const ChatView: React.FC = () => {
     if(!currentUser) return null;
 
     return (
-        <div className="h-full flex flex-col">
-            <h1 className="text-3xl font-bold text-stone-800 mb-4 shrink-0">Chat</h1>
-            <div className="bg-white rounded-lg shadow-sm flex-grow flex overflow-hidden">
+        <div className="h-[calc(100vh-10rem)] md:h-full flex flex-col">
+            <h1 className="text-3xl font-bold text-stone-800 mb-4 shrink-0 hidden md:block">Chat</h1>
+            <div className="bg-white rounded-lg shadow-sm flex-grow flex flex-col md:flex-row overflow-hidden">
                 {/* Contacts List */}
                 <div className={`
-                    ${selectedUserId ? 'hidden' : 'flex'} md:flex flex-col w-full md:w-1/3 border-r border-stone-200
+                    ${selectedUserId && 'hidden'} md:flex flex-col w-full md:w-1/3 border-r border-stone-200 h-full
                 `}>
                     <div className="p-4 border-b">
                         <h2 className="text-lg font-bold">Conversaciones</h2>
                     </div>
-                    <ul className="overflow-y-auto">
+                    <ul className="overflow-y-auto flex-grow">
                         {contacts.map(contact => {
                             const lastMessage = messages
                                 .filter(m => m.senderId === contact.id || m.receiverId === contact.id)
@@ -85,7 +84,7 @@ const ChatView: React.FC = () => {
                 </div>
                 {/* Chat Window */}
                 <div className={`
-                    ${!selectedUserId ? 'hidden' : 'flex'} md:flex flex-col w-full md:w-2/3
+                    ${!selectedUserId && 'hidden'} md:flex flex-col w-full md:w-2/3 h-full
                 `}>
                     {selectedContact ? (
                         <>

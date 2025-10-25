@@ -1,4 +1,3 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
@@ -14,3 +13,14 @@ root.render(
     <App />
   </React.StrictMode>
 );
+
+// Hide splash screen after render
+window.addEventListener('load', () => {
+  const splash = document.getElementById('splash-screen');
+  if (splash) {
+    splash.classList.add('fade-out');
+    setTimeout(() => {
+      splash.remove();
+    }, 500); // Corresponds to the transition duration
+  }
+});

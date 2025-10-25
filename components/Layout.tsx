@@ -36,9 +36,11 @@ const Layout: React.FC<LayoutProps> = ({ children, navItems, activeView, setActi
             </button>
         );
     };
+    
+    const gridColsClass = navItems.length === 4 ? 'grid-cols-4' : 'grid-cols-5';
 
     return (
-        <div className="flex h-screen bg-stone-100 overflow-hidden">
+        <div className="flex h-screen bg-stone-100">
             {/* Desktop Sidebar */}
             <aside className="hidden md:flex flex-col w-64 bg-teal-900 text-white">
                 <div className="flex items-center justify-center h-20 border-b border-teal-800">
@@ -65,9 +67,9 @@ const Layout: React.FC<LayoutProps> = ({ children, navItems, activeView, setActi
                 </div>
             </aside>
             
-            {/* Mobile Header and Menu */}
-            <div className="flex-1 flex flex-col">
-                <header className="md:hidden flex items-center justify-between h-16 bg-white shadow-md px-4">
+            {/* Mobile Experience */}
+            <div className="flex-1 flex flex-col overflow-hidden">
+                <header className="md:hidden flex items-center justify-between h-16 bg-white shadow-md px-4 shrink-0">
                      <h1 className="text-xl font-bold text-teal-700">Zenith Yoga</h1>
                     <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                         {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -76,7 +78,7 @@ const Layout: React.FC<LayoutProps> = ({ children, navItems, activeView, setActi
 
                 {/* Mobile Menu Content */}
                 {isMobileMenuOpen && (
-                    <div className="md:hidden bg-teal-900 text-white p-4 absolute top-16 left-0 right-0 z-10 shadow-lg">
+                    <div className="md:hidden bg-teal-900 text-white p-4 absolute top-16 left-0 right-0 z-20 shadow-lg">
                         <nav className="space-y-2 mb-4">
                             {navItems.map((item) => <NavLink key={item.viewId} item={item} />)}
                         </nav>
@@ -94,11 +96,9 @@ const Layout: React.FC<LayoutProps> = ({ children, navItems, activeView, setActi
                 )}
                 
                 {/* Main Content */}
-                <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto flex flex-col">
-                    <div className="flex-grow">
-                        {children}
-                    </div>
-                    <footer className="pt-8 pb-4 text-center">
+                <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-24 md:pb-8">
+                    {children}
+                    <footer className="pt-8 text-center">
                         <a href="https://www.yogaalliance.org/" target="_blank" rel="noopener noreferrer" className="inline-block" title="Registered Yoga School with Yoga Alliance">
                             <img 
                                 src="https://appdesignmex.com/yogaalliance.png" 
@@ -110,7 +110,7 @@ const Layout: React.FC<LayoutProps> = ({ children, navItems, activeView, setActi
                 </main>
 
                  {/* Mobile Bottom Bar */}
-                <nav className="md:hidden grid grid-cols-5 gap-1 p-2 bg-white border-t border-stone-200 fixed bottom-0 w-full">
+                <nav className={`md:hidden grid ${gridColsClass} gap-1 p-2 bg-white border-t border-stone-200 fixed bottom-0 w-full z-10`}>
                     {navItems.slice(0, 5).map(item => {
                          const isActive = activeView === item.viewId;
                          const Icon = item.icon;
@@ -126,7 +126,6 @@ const Layout: React.FC<LayoutProps> = ({ children, navItems, activeView, setActi
                         )
                     })}
                 </nav>
-                <div className="md:hidden h-20"></div> {/* Spacer for bottom bar */}
             </div>
         </div>
     );

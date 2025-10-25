@@ -1,10 +1,24 @@
-
 import React, { useState, createContext, useContext, useMemo } from 'react';
-import { User, Role, YogaClass, Booking, OnDemandVideo, Promotion, Teacher, FinancialRecord } from './types';
-import { mockUsers, mockClasses, mockBookings, mockOnDemandVideos, mockPromotions, mockTeachers, mockFinancialRecords } from './data/mockData';
+import { User, Role, YogaClass, Booking, OnDemandVideo, Promotion, Teacher, FinancialRecord, ChatMessage } from './types';
+import { mockUsers, mockClasses, mockBookings, mockOnDemandVideos, mockPromotions, mockTeachers, mockFinancialRecords, mockMessages } from './data/mockData';
 import AdminDashboard from './views/admin/AdminDashboard';
 import ClientDashboard from './views/client/ClientDashboard';
 import { Hash, Users, Calendar, Video, Tag, UserCircle, LogIn, Sun, Moon } from 'lucide-react';
+import usePersistentState from './hooks/usePersistentState';
+
+// --- UTILS ---
+const dateFields = ['startTime', 'bookingTime', 'date', 'timestamp'];
+function reviveDates(key: string, value: any) {
+  if (dateFields.includes(key) && typeof value === 'string') {
+    return new Date(value);
+  }
+  return value;
+}
+
+function parseWithDates<T>(jsonString: string | null): T | null {
+  if (!jsonString) return null;
+  return JSON.parse(jsonString, reviveDates);
+}
 
 // --- CONTEXTS ---
 type AppDataContextType = {
@@ -20,6 +34,8 @@ type AppDataContextType = {
   teachers: Teacher[];
   financialRecords: FinancialRecord[];
   setFinancialRecords: React.Dispatch<React.SetStateAction<FinancialRecord[]>>;
+  messages: ChatMessage[];
+  setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
 };
 
 const AppDataContext = createContext<AppDataContextType | null>(null);
@@ -45,7 +61,7 @@ export const useAuth = () => {
 
 // --- AUTH PROVIDER ---
 const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [currentUser, setCurrentUser] = usePersistentState<User | null>('currentUser', null);
     const { users } = useAppData();
 
     const login = (userId: string) => {
@@ -72,17 +88,18 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
 // --- APP DATA PROVIDER ---
 const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [users, setUsers] = useState<User[]>(mockUsers);
-    const [classes, setClasses] = useState<YogaClass[]>(mockClasses);
-    const [bookings, setBookings] = useState<Booking[]>(mockBookings);
-    const [videos, setVideos] = useState<OnDemandVideo[]>(mockOnDemandVideos);
-    const [promotions, setPromotions] = useState<Promotion[]>(mockPromotions);
-    const [teachers, setTeachers] = useState<Teacher[]>(mockTeachers);
-    const [financialRecords, setFinancialRecords] = useState<FinancialRecord[]>(mockFinancialRecords);
+    const [users, setUsers] = usePersistentState<User[]>('users', mockUsers);
+    const [classes, setClasses] = usePersistentState<YogaClass[]>('classes', mockClasses, reviveDates);
+    const [bookings, setBookings] = usePersistentState<Booking[]>('bookings', mockBookings, reviveDates);
+    const [videos, setVideos] = useState<OnDemandVideo[]>(mockOnDemandVideos); // Videos are static for now
+    const [promotions, setPromotions] = usePersistentState<Promotion[]>('promotions', mockPromotions);
+    const [teachers, setTeachers] = useState<Teacher[]>(mockTeachers); // Teachers are static
+    const [financialRecords, setFinancialRecords] = usePersistentState<FinancialRecord[]>('financialRecords', mockFinancialRecords, reviveDates);
+    const [messages, setMessages] = usePersistentState<ChatMessage[]>('messages', mockMessages, reviveDates);
 
     const contextValue = useMemo(() => ({
-        users, setUsers, classes, setClasses, bookings, setBookings, videos, promotions, setPromotions, teachers, financialRecords, setFinancialRecords
-    }), [users, classes, bookings, videos, promotions, teachers, financialRecords]);
+        users, setUsers, classes, setClasses, bookings, setBookings, videos, promotions, setPromotions, teachers, financialRecords, setFinancialRecords, messages, setMessages
+    }), [users, classes, bookings, videos, promotions, teachers, financialRecords, messages]);
 
     return (
         <AppDataContext.Provider value={contextValue}>
